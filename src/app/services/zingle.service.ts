@@ -8,5 +8,4 @@ export class ZingleService {
 
   constructor(private http: HttpClient) { }
 
-  
 }
