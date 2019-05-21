@@ -1,23 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContactForm } from '../models/contact-form';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.scss']
 })
-export class ContactFormComponent implements OnInit {
+export class ContactFormComponent {
   model = new ContactForm('', '', null, null);
-  submitted = false;
+  durationInSeconds = 3;
 
-  constructor() { }
+  @ViewChild('contactForm') contactFormRef;
 
-  ngOnInit() {
-  }
+  constructor(private snackBar: MatSnackBar) { }
 
   onSubmit() {
-    this.submitted = true;
     console.log('Form: ', this.model);
-  }
+    this.contactFormRef.reset();
 
+    this.snackBar.open('Thank You!', null, {
+      duration: this.durationInSeconds * 1000
+    });
+  }
 }

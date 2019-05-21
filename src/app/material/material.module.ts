@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import {
   MatButtonModule,
-  MatCheckboxModule,
   MatToolbarModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 } from '@angular/material';
 
 
@@ -14,15 +14,15 @@ import {
   imports: [
     CommonModule,
     MatButtonModule,
-    MatCheckboxModule,
     MatToolbarModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ],
   exports: [
     MatButtonModule,
-    MatCheckboxModule,
     MatToolbarModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ]
 })
 export class MaterialModule { }

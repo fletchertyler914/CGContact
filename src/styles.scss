@@ -48,3 +48,12 @@ body {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
 }
 
+snack-bar-container.mat-snack-bar-container {
+    min-width: 100px;
+    width: 125px;
+}
+
+simple-snack-bar.mat-simple-snackbar {
+    justify-content: center;
+}
+
