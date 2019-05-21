@@ -1,0 +1,37 @@
+@import '../../styles.scss';
+
+.contact-form-card {
+    margin: 50px auto 0px auto;
+    background-color: $cg-white;
+    padding: 25px;
+    width: 50%;
+    max-width: 500px;
+}
+
+.contact-form-header {
+    font-family: 'United Sans';
+    color: $cg-red;
+    text-align: center;
+}
+
+.contact-button-wrapper {
+   text-align: center;
+}
+
+.contact-button {
+    background-color: $cg-red;
+    color: $cg-white;
+    border: none;
+}
+
+.required {
+    color: $cg-red;
+}
+
+// .ng-valid[required], .ng-valid.required  {
+//     border-left: 5px solid #42A948; /* green */
+//   }
+  
+// .ng-invalid:not(form)  {
+//     border-left: 5px solid #a94442; /* red */
+// }
