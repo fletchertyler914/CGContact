@@ -11,9 +11,7 @@ export class ZingleService {
 
   createContact(payload: ContactForm) {
     console.log(payload);
-
     console.log(this.getSelectedDayTags(payload.schedule));
-
     // ToDo: Wire Up Zingle API
   }
 
@@ -21,7 +19,9 @@ export class ZingleService {
     const tags: string[] = [];
 
     daysSelected.forEach((day: DayPreference) => {
-      tags.push(day.dayLong.concat('_', this.getPeriod(day)));
+      if (day.selected) {
+        tags.push(day.dayLong.concat('_', this.getPeriod(day)));
+      }
     });
 
     return tags;
@@ -29,7 +29,7 @@ export class ZingleService {
 
   getPeriod(day: DayPreference): string {
     if (day.period === '') {
-      return 'No-Preference';
+      return 'No-Preference'; // Not Really AN Option Right Now, But Can Allow For It
     } else if (day.period === 'AM') {
       return 'AM';
     } else if (day.period === 'PM') {
