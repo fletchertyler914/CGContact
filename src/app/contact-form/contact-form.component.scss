@@ -24,8 +24,30 @@
     border: none;
 }
 
+.schedule-wrapper {
+    width: 100%;
+    margin: 5px auto 25px auto;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.schedule-button {
+    display: flex;
+    justify-content: center;
+}
+
 .required {
     color: $cg-red;
+}
+
+.selected {
+    background-color: $cg-red;
+    color: $cg-white;
+}
+
+.selected:hover {
+    background-color: $cg-red-hover !important;
+    color: $cg-white;
 }
 
 @media screen and (max-width: 950px) {

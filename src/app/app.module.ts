@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material/material.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -27,6 +27,7 @@ import { ZingleService } from './services/zingle.service';
     HttpClientModule,
     MaterialModule,
     FormsModule,
+    ReactiveFormsModule
   ],
   providers: [ZingleService],
   bootstrap: [AppComponent]

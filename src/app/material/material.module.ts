@@ -4,8 +4,12 @@ import { CommonModule } from '@angular/common';
 import {
   MatButtonModule,
   MatToolbarModule,
+  MatSelectModule,
   MatCardModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatCheckboxModule,
+  MatMenuModule,
+  MatIconModule
 } from '@angular/material';
 
 
@@ -15,14 +19,22 @@ import {
     CommonModule,
     MatButtonModule,
     MatToolbarModule,
+    MatSelectModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatIconModule
   ],
   exports: [
     MatButtonModule,
     MatToolbarModule,
+    MatSelectModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatIconModule
   ]
 })
 export class MaterialModule { }

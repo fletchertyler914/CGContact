@@ -1,31 +1,111 @@
 <mat-card class="contact-form-card">
   <h1 class="contact-form-header">CG Future Camper</h1>
-  <!-- <p class="contact-form-subheader">Let's Get You Signed Up...</p> -->
-
-  <form (ngSubmit)="onSubmit()" #contactForm="ngForm">
+  <form (submit)="onSubmit(); contactForm.reset()" #contactForm="ngForm">
     <div class="form-group">
-      <label for="first-name">First Name: <span class="required">*</span></label>
-      <input type="text" class="form-control" id="first-name" [(ngModel)]="model.firstName" name="first-name" #firstName="ngModel" required>
+      <label for="first-name"
+        >First Name: <span class="required">*</span></label
+      >
+      <input
+        type="text"
+        class="form-control"
+        id="first-name"
+        [(ngModel)]="model.firstName"
+        name="first-name"
+        #firstName="ngModel"
+        required
+      />
     </div>
 
     <div class="form-group">
       <label for="last-name">Last Name: <span class="required">*</span></label>
-      <input type="text" class="form-control" id="last-name" [(ngModel)]="model.lastName" name="last-name" #lastName="ngModel" required>
+      <input
+        type="text"
+        class="form-control"
+        id="last-name"
+        [(ngModel)]="model.lastName"
+        name="last-name"
+        #lastName="ngModel"
+        required
+      />
     </div>
 
     <div class="form-group">
       <label for="phone">Phone Number: <span class="required">*</span></label>
-      <input type="number" class="form-control" id="phone" [(ngModel)]="model.phoneNumber" name="phoneNumber" #phoneNumber="ngModel" required>
+      <input
+        type="text"
+        class="form-control"
+        id="phone"
+        [(ngModel)]="model.phoneNumber"
+        name="phone"
+        #phone="ngModel"
+        required
+      />
     </div>
 
     <div class="form-group">
       <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" [(ngModel)]="model.email" name="email" #email="ngModel">
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        [(ngModel)]="model.email"
+        name="email"
+        #email="ngModel"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Schedule Preference:</label><br />
+      <div class="schedule-wrapper">
+        <ng-container *ngFor="let option of model.schedule; let i = index">
+          <mat-menu #appMenu="matMenu">
+              <button
+              *ngIf="model.schedule[i].period !== ''"
+              type="button"
+              mat-menu-item
+              (click)="selectDay(option, '')"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              mat-menu-item
+              (click)="selectDay(option, 'AM')"
+              [ngClass]="{ selected: model.schedule[i].period === 'AM' }"
+            >
+              AM
+            </button>
+            <button
+              type="button"
+              mat-menu-item
+              (click)="selectDay(option, 'PM')"
+              [ngClass]="{ selected: model.schedule[i].period === 'PM' }"
+            >
+              PM
+            </button>
+          </mat-menu>
+
+          <button
+            type="button"
+            mat-icon-button
+            [matMenuTriggerFor]="appMenu"
+            class="schedule-button"
+            [ngClass]="{ selected: model.schedule[i].selected }"
+          >
+            {{ option.day }}
+          </button>
+        </ng-container>
+      </div>
     </div>
 
     <div class="contact-button-wrapper">
-      <button type="submit" class="btn contact-button" [disabled]="!contactForm.form.valid">Submit</button>
+      <button
+        type="submit"
+        class="btn contact-button"
+        [disabled]="!contactForm.form.valid"
+      >
+        Submit
+      </button>
     </div>
-
   </form>
 </mat-card>
