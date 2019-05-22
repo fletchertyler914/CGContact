@@ -28,12 +28,12 @@ export class ZingleService {
   }
 
   getPeriod(day: DayPreference): string {
-    if (day.period === '') {
-      return 'No-Preference'; // Not Really AN Option Right Now, But Can Allow For It
-    } else if (day.period === 'AM') {
-      return 'AM';
-    } else if (day.period === 'PM') {
-      return 'PM';
+    if (day.period === 'Morning') {
+      return 'Morning';
+    } else if (day.period === 'Mid Day') {
+        return 'MidDay';
+    } else if (day.period === 'Evening') {
+      return 'Evening';
     }
   }
 }

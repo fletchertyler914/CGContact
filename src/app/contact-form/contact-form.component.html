@@ -67,22 +67,17 @@
             >
               Clear
             </button>
-            <button
+            <ng-container *ngFor="let period of periodOptions">
+            <button 
+              *ngIf="!isPeriodBlocked(option, period)"
               type="button"
               mat-menu-item
-              (click)="selectDay(option, 'AM')"
-              [ngClass]="{ selected: model.schedule[i].period === 'AM' }"
+              (click)="selectDay(option, period)"
+              [ngClass]="{ selected: model.schedule[i].period === period }"
             >
-              AM
+            {{period}}
             </button>
-            <button
-              type="button"
-              mat-menu-item
-              (click)="selectDay(option, 'PM')"
-              [ngClass]="{ selected: model.schedule[i].period === 'PM' }"
-            >
-              PM
-            </button>
+          </ng-container>
           </mat-menu>
 
           <button

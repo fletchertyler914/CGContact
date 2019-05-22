@@ -14,6 +14,7 @@ export class ContactFormComponent implements OnInit {
   public model: ContactForm;
   private durationInSeconds = 3;
   public showShortDays = true;
+  public periodOptions: string[];
 
   constructor(
     private zingleService: ZingleService,
@@ -22,6 +23,7 @@ export class ContactFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     // this.breakpointObserver
     //   .observe(['(max-width: 650px)'])
     //   .subscribe((state: BreakpointState) => {
@@ -75,13 +77,13 @@ export class ContactFormComponent implements OnInit {
 
   getScheduleDays(blockedDays: string[]): DayPreference[] {
     const daysOfWeekMap = [
-      {long: 'Sunday', short: 'Su'},
-      {long: 'Monday', short: 'Mo'},
-      {long: 'Tuesday', short: 'Tu'},
-      {long: 'Wednesday', short: 'We'},
-      {long: 'Thursday', short: 'Th'},
-      {long: 'Friday', short: 'Fr'},
-      {long: 'Saturday', short: 'Sa'}
+      { long: 'Sunday', short: 'Su' },
+      { long: 'Monday', short: 'Mo' },
+      { long: 'Tuesday', short: 'Tu' },
+      { long: 'Wednesday', short: 'We' },
+      { long: 'Thursday', short: 'Th' },
+      { long: 'Friday', short: 'Fr' },
+      { long: 'Saturday', short: 'Sa' }
     ];
 
     const scheduledDays: DayPreference[] = [];
@@ -95,16 +97,76 @@ export class ContactFormComponent implements OnInit {
     );
   }
 
-  getBlockedDays(): string[] {
-    // const blockedDays = ['Fr', 'Sa', 'Su'];
-    const blockedDays = ['Friday', 'Saturday', 'Sunday'];
+  isPeriodBlocked(day: DayPreference, period: string): boolean {
+    switch (day.dayLong) {
+      case 'Sunday':
+        return true;
+      case 'Monday':
+        if (period === 'Morning') {
+          return false;
+        }
+        if (period === 'Mid Day') {
+          return false;
+        }
+        if (period === 'Evening') {
+          return false;
+        }
+        return true;
+      case 'Tuesday':
+        if (period === 'Morning') {
+          return false;
+        }
+        if (period === 'Mid Day') {
+          return false;
+        }
+        if (period === 'Evening') {
+          return false;
+        }
+        break;
+      case 'Wednesday':
+        if (period === 'Morning') {
+          return false;
+        }
+        if (period === 'Mid Day') {
+          return false;
+        }
+        if (period === 'Evening') {
+          return false;
+        }
+        break;
+      case 'Thursday':
+        if (period === 'Morning') {
+          return false;
+        }
+        if (period === 'Mid Day') {
+          return false;
+        }
+        if (period === 'Evening') {
+          return false;
+        }
+        break;
+      case 'Friday':
+        if (period === 'Morning') {
+          return false;
+        }
+        if (period === 'Mid Day') {
+          return false;
+        }
+        if (period === 'Evening') {
+          return true;
+        }
+        break;
+      case 'Saturday':
+        return true;
+    }
+  }
 
+  getBlockedDays(): string[] {
+    const blockedDays = ['Saturday', 'Sunday'];
     return blockedDays;
   }
 
   updateDaysString() {
-    this.model.schedule.forEach((day: DayPreference) => {
-
-    });
+    this.model.schedule.forEach((day: DayPreference) => {});
   }
 }
