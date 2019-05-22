@@ -58,7 +58,7 @@
       <label for="email">Schedule Preference:</label><br />
       <div class="schedule-wrapper">
         <ng-container *ngFor="let option of model.schedule; let i = index">
-          <mat-menu #appMenu="matMenu">
+          <mat-menu #appMenu="matMenu" yPosition="below">
               <button
               *ngIf="model.schedule[i].period !== ''"
               type="button"
@@ -90,9 +90,9 @@
             mat-icon-button
             [matMenuTriggerFor]="appMenu"
             class="schedule-button"
-            [ngClass]="{ selected: model.schedule[i].selected }"
+            [ngClass]="{ selected: model.schedule[i].selected, short: showShortDays, long: !showShortDays }"
           >
-            {{ option.day }}
+            {{ showShortDays ? option.dayShort : option.dayLong }}
           </button>
         </ng-container>
       </div>

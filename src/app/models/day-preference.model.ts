@@ -1,6 +1,7 @@
 export class DayPreference {
     constructor(
-        public day: string,
+        public dayLong: string,
+        public dayShort: string,
         public selected: boolean,
         public period: string,
       ) {  }

@@ -26,9 +26,11 @@
 
 .schedule-wrapper {
     width: 100%;
-    margin: 5px auto 25px auto;
+    margin: 5px auto 5px auto;
     display: flex;
+    align-items: center;
     justify-content: space-evenly;
+    height: 60px;
 }
 
 .schedule-button {
