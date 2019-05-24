@@ -1,6 +1,18 @@
 <mat-toolbar class="navbar-wrapper mat-elevation-z2">
   <img src="assets/cg_black.png" height="40px"/>
-  <p>Status: {{authService.loggedIn$ | async}}</p>
-  <h2 *ngIf="!(authService.loggedIn$ | async)" style="margin-left: auto;"><button (click)='authService.login()'>Log In</button></h2>
-  <h2 *ngIf="(authService.loggedIn$ | async)" style="margin-left: auto;"><button (click)='authService.logOut()'>Log Out</button></h2>
+
+  <div style="margin-left: auto; display: flex">
+      <button style="display: inline-flex" mat-icon-button [matMenuTriggerFor]="appMenu">
+          <mat-icon>more_vert</mat-icon>
+      </button>
+  </div>
 </mat-toolbar>
+
+<mat-menu #appMenu="matMenu">
+  <span *ngIf="(authService.loggedIn$ | async)" style="display: inline-flex; justify-content: center; width: 100%; border-bottom: 1px solid lightgray;">
+      <p style="font-size: 14px;">Welcome, {{authService.user?.first_name}}</p>
+  </span>
+  <button *ngIf="!(authService.loggedIn$ | async)" (click)="authService.login()" mat-menu-item>Log In</button>
+  <button *ngIf="(authService.loggedIn$ | async)" (click)="authService.logout()"  mat-menu-item>Log Out</button>
+</mat-menu>
+  

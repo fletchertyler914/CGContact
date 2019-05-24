@@ -5,9 +5,9 @@ import { DayPreference } from '../models/day-preference.model';
 import { Services, Result } from '../models/services.model';
 import { CreateContact } from '../models/create-contact.model';
 
-import { map, filter, withLatestFrom, take, takeUntil, tap } from 'rxjs/operators';
+import { map, filter, withLatestFrom, take, takeUntil, tap, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, throwError, of } from 'rxjs';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { LoginResponse } from '../models/login-response.model';
 
@@ -18,9 +18,8 @@ import { LoginResponse } from '../models/login-response.model';
   providedIn: 'root'
 })
 export class ZingleService implements OnDestroy {
-  private token: string = this.storage.get('TOKEN');
   public URL = 'https://api.zingle.me/v1';
-  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(!!this.token);
+  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(!!this.storage.get('TOKEN'));
   private destroy$: Subject<boolean>;
 
   constructor(@Inject(SESSION_STORAGE) private storage: WebStorageService, private http: HttpClient) { }
@@ -31,34 +30,23 @@ export class ZingleService implements OnDestroy {
   }
 
   login(token: string) {
-    return this.http.get<any>(this.URL, this.getHttpHeaders(token))
-    .pipe(
-      filter((responseData: LoginResponse) => !!responseData),
-      map((responseData: LoginResponse) => responseData.auth),
-      tap(() => {
-        this.loggedIn$.next(true);
-        this.storage.set('TOKEN', token);
-      }),
-      take(1)
-    );
+    return this.http.get<LoginResponse>(this.URL, this.getHttpHeaders(token));
   }
 
   logout() {
     this.loggedIn$.next(false);
     this.storage.remove('TOKEN');
+    this.storage.remove('USER');
   }
 
   createContact(serviceId: string, payload: ContactForm) {
     const url = `${this.URL}/services/${serviceId}/contacts`;
-
-    console.log(JSON.parse(this.contactFormToJson(payload)));
-    console.log(this.contactFormToJson(payload));
-
+    
     this.http
       .post<CreateContact>(
         url,
         this.contactFormToJson(payload),
-        this.getHttpHeaders(this.token)
+        this.getHttpHeaders(this.storage.get('TOKEN'))
       )
       .subscribe((result: CreateContact) => {
         console.log(result);
@@ -92,7 +80,7 @@ export class ZingleService implements OnDestroy {
   }
 
   getServicesIdByName(name: string): Observable<string> {
-    const httpHeader = this.getHttpHeaders(this.token);
+    const httpHeader = this.getHttpHeaders(this.storage.get('TOKEN'));
 
     return this.http
       .get<Services>(`${this.URL}/services`, httpHeader)

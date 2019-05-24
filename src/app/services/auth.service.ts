@@ -1,20 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { ZingleService } from './zingle.service';
 import { LoginModalComponent, LoginModal } from '../login-modal/login-modal.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { Auth } from '../models/login-response.model';
 import { filter, tap, take } from 'rxjs/operators';
+import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
-  public user: Auth;
+  public user: Auth = this.storage.get('USER') || null;
   public loggedIn$ = this.zingleService.loggedIn$;
   private dialogRef: MatDialogRef<LoginModalComponent>;
 
-  constructor(private zingleService: ZingleService, private dialog: MatDialog) { }
+  constructor(
+    @Inject(SESSION_STORAGE) private storage: WebStorageService,
+    private zingleService: ZingleService,
+    private dialog: MatDialog
+  ) { }
 
   login() {
     this.dialogRef = this.dialog.open(LoginModalComponent, {
@@ -30,7 +35,7 @@ export class AuthService {
     ).subscribe();
   }
 
-  logOut() {
+  logout() {
     this.zingleService.logout();
   }
 }
