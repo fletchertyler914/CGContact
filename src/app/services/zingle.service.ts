@@ -5,10 +5,11 @@ import { DayPreference } from '../models/day-preference.model';
 import { Services, Result } from '../models/services.model';
 import { CreateContact } from '../models/create-contact.model';
 
-import { map, filter, withLatestFrom, take } from 'rxjs/operators';
+import { map, filter, withLatestFrom, take, takeUntil, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
+import { LoginResponse } from '../models/login-response.model';
 
 //   const services = Convert.toServices(json);
 //   const createContact = Convert.toCreateContact(json);
@@ -17,17 +18,12 @@ import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
   providedIn: 'root'
 })
 export class ZingleService implements OnDestroy {
-  public username = 'themotivatedu@gmail.com';
-  public password = 'Cgcpt2019';
+  private token: string = this.storage.get('TOKEN');
   public URL = 'https://api.zingle.me/v1';
-
+  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(!!this.token);
   private destroy$: Subject<boolean>;
-  private token: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  constructor(
-    private http: HttpClient,
-    @Inject(SESSION_STORAGE) private storage: WebStorageService
-  ) { }
+  constructor(@Inject(SESSION_STORAGE) private storage: WebStorageService, private http: HttpClient) { }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -35,8 +31,21 @@ export class ZingleService implements OnDestroy {
   }
 
   login(token: string) {
-    //  TODO: Implement Login API To confirm credentials.
-    return Observable.create();
+    return this.http.get<any>(this.URL, this.getHttpHeaders(token))
+    .pipe(
+      filter((responseData: LoginResponse) => !!responseData),
+      map((responseData: LoginResponse) => responseData.auth),
+      tap(() => {
+        this.loggedIn$.next(true);
+        this.storage.set('TOKEN', token);
+      }),
+      take(1)
+    );
+  }
+
+  logout() {
+    this.loggedIn$.next(false);
+    this.storage.remove('TOKEN');
   }
 
   createContact(serviceId: string, payload: ContactForm) {
@@ -49,7 +58,7 @@ export class ZingleService implements OnDestroy {
       .post<CreateContact>(
         url,
         this.contactFormToJson(payload),
-        this.getHttpHeaders()
+        this.getHttpHeaders(this.token)
       )
       .subscribe((result: CreateContact) => {
         console.log(result);
@@ -58,7 +67,6 @@ export class ZingleService implements OnDestroy {
           console.log(contactResult);
         }
       });
-    // ToDo: Wire Up Zingle API
   }
 
   getSelectedDayTags(daysSelected: DayPreference[]): string[] {
@@ -84,8 +92,10 @@ export class ZingleService implements OnDestroy {
   }
 
   getServicesIdByName(name: string): Observable<string> {
+    const httpHeader = this.getHttpHeaders(this.token);
+
     return this.http
-      .get<Services>(`${this.URL}/services`, this.getHttpHeaders())
+      .get<Services>(`${this.URL}/services`, httpHeader)
       .pipe(
         map((services: Services) => services.result),
         map((services: Result[]) =>
@@ -95,22 +105,13 @@ export class ZingleService implements OnDestroy {
       );
   }
 
-  getHttpHeaders(): { headers: HttpHeaders } {
-    let headers = null;
-    console.log(this.storage.get('TOKEN'));
-
-    if (!!this.storage.get('TOKEN')) {
-      headers = {
+  getHttpHeaders(token: string): { headers: HttpHeaders } {
+    return {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
-          Authorization: `Basic ${this.storage.get('TOKEN')}`
+          Authorization: `Basic ${token}`
         })
       };
-
-      console.log('headers', headers);
-    }
-
-    return headers;
   }
 
   contactFormToJson(payload: ContactForm) {

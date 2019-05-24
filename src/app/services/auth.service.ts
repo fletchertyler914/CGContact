@@ -1,78 +1,36 @@
-import { Injectable, Inject, OnDestroy } from '@angular/core';
-import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { LoginModalComponent } from '../login-modal/login-modal.component';
-import { tap, takeUntil, take, switchMap, filter, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { ZingleService } from './zingle.service';
+import { LoginModalComponent, LoginModal } from '../login-modal/login-modal.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
+import { Auth } from '../models/login-response.model';
+import { filter, tap, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class LoginModal {
-  userName: string;
-  password: string;
+export class AuthService {
+  public user: Auth;
+  public loggedIn$ = this.zingleService.loggedIn$;
+  private dialogRef: MatDialogRef<LoginModalComponent>;
 
-  constructor(username: string, pass: string) {
-    this.userName = username;
-    this.password = pass;
-   }
-}
-
-export class AuthService implements OnDestroy {
-  private loginDialog: MatDialogRef<LoginModalComponent>;
-  private loginPoll: any;
-  private token: string;
-  private destroy$: Subject<boolean> = new Subject();
-  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(this.checkIfLoggedIn());
-
-  constructor(
-    @Inject(SESSION_STORAGE) private storage: WebStorageService,
-    public dialog: MatDialog,
-    private zingleService: ZingleService) { }
-
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.complete();
-  }
-
-  startLoginPoll() {
-    this.loginPoll = setInterval(() => {
-      this.loggedIn$.next(this.checkIfLoggedIn());
-      console.log('Logged In: ', this.loggedIn$);
-    }, 10000);
-  }
+  constructor(private zingleService: ZingleService, private dialog: MatDialog) { }
 
   login() {
-    this.loginDialog = this.dialog.open(LoginModalComponent, {
+    this.dialogRef = this.dialog.open(LoginModalComponent, {
       width: '300px',
       data: new LoginModal('', '')
     });
 
-    this.loginDialog.afterClosed().pipe(
-      filter((data: LoginModal) => !!data),
-      tap((data: LoginModal) => btoa(`${data.userName}:${data.password}`)),
-      switchMap(() => this.zingleService.login(this.token)),
-      takeUntil(this.destroy$)
-    ).subscribe((loginResponse: any) => {
-      if (loginResponse.status === 200) {
-       // token is correct, set in storage
-       this.storage.set('token', this.token);
-      } else {
-        // token is not correct
-        // this.token = null
-        // Display Error Message And Clear Token
-        this.logOut();
-      }
-    });
+    this.dialogRef.afterClosed()
+    .pipe(
+      filter((user: Auth) => !!user),
+      tap((user: Auth) => this.user = user),
+      take(1)
+    ).subscribe();
   }
 
   logOut() {
-    this.storage.remove('TOKEN');
-  }
-
-  checkIfLoggedIn(): boolean {
-    return !!this.storage.get('TOKEN');
+    this.zingleService.logout();
   }
 }

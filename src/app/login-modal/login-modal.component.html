@@ -6,7 +6,7 @@
           type="text"
           class="form-control"
           id="username"
-          [(ngModel)]="data.username"
+          [(ngModel)]="loginData.userName"
           name="username"
           #username="ngModel"
           required
@@ -18,7 +18,7 @@
         type="password"
         class="form-control"
         id="password"
-        [(ngModel)]="data.password"
+        [(ngModel)]="loginData.password"
         name="password"
         #password="ngModel"
         required
@@ -27,5 +27,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button cdkFocusInitial (click)="login(data)">Login</button>
+  <button mat-button cdkFocusInitial (click)="login(loginData)">Login</button>
 </div>

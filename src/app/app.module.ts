@@ -15,6 +15,7 @@ import { ContactFormComponent } from './contact-form/contact-form.component';
 
 import { AuthService } from './services/auth.service';
 import { ZingleService } from './services/zingle.service';
+import { MatDialogModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ZingleService } from './services/zingle.service';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    StorageServiceModule
+    StorageServiceModule,
+    MatDialogModule
   ],
   entryComponents: [LoginModalComponent],
   providers: [ZingleService, AuthService],

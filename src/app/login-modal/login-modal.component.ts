@@ -1,10 +1,19 @@
-import { Component, Inject, ɵConsole } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import {SESSION_STORAGE, WebStorageService} from 'angular-webstorage-service';
+import { filter, tap, take, map } from 'rxjs/operators';
+import { ZingleService } from '../services/zingle.service';
+import { LoginResponse, Auth } from '../models/login-response.model';
+import { Subject } from 'rxjs';
+import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
 
-export interface DialogData {
-  username: string;
+export class LoginModal {
+  userName: string;
   password: string;
+
+  constructor(username: string, pass: string) {
+    this.userName = username;
+    this.password = pass;
+  }
 }
 
 @Component({
@@ -13,18 +22,29 @@ export interface DialogData {
   styleUrls: ['./login-modal.component.scss']
 })
 export class LoginModalComponent {
-
+  public returnData: Auth;
+  public token: string;
+  private destroy$ = new Subject();
   constructor(
-    public dialogRef: MatDialogRef<LoginModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    @Inject(SESSION_STORAGE) private storage: WebStorageService) {}
+    @Inject(MAT_DIALOG_DATA) public loginData: LoginModal,
+    @Inject(SESSION_STORAGE) private storage: WebStorageService,
+    private dialogRef: MatDialogRef<LoginModalComponent>,
+    private zingleService: ZingleService
+  ) {}
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(this.returnData);
   }
 
-  login(data: DialogData) {
-    this.storage.set('TOKEN', btoa(`${data.username}:${data.password}`));
+  login(data: any) {
+    this.zingleService
+      .login(btoa(`${data.userName}:${data.password}`))
+      .pipe(
+        filter((user: Auth) => !!user),
+        map((user: Auth) => {
+          this.dialogRef.close(user);
+        }),
+        take(1)
+      ).subscribe();
   }
-
 }

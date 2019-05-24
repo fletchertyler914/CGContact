@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { DayPreference } from '../models/day-preference.model';
 import { ZingleService } from '../services/zingle.service';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-contact-form',
@@ -21,13 +22,11 @@ export class ContactFormComponent implements OnInit {
   constructor(
     private zingleService: ZingleService,
     private snackBar: MatSnackBar,
-    public breakpointObserver: BreakpointObserver
+    public breakpointObserver: BreakpointObserver,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // Init Zingle Services
-    this.zingleService.getServicesIdByName('The Motivated U').subscribe(serviceId => this.serviceId = serviceId);
-
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     // this.breakpointObserver
     //   .observe(['(max-width: 650px)'])
@@ -40,6 +39,9 @@ export class ContactFormComponent implements OnInit {
     //   });
 
     this.model = this.getNewModel();
+
+     // Init Zingle Services
+    // this.zingleService.getServicesIdByName('The Motivated U').subscribe(serviceId => this.serviceId = serviceId);
   }
 
   onSubmit() {
