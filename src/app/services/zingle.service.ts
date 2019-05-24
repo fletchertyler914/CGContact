@@ -4,25 +4,26 @@ import { ContactForm } from '../models/contact-form.model';
 import { DayPreference } from '../models/day-preference.model';
 import { Services, Result } from '../models/services.model';
 import { CreateContact } from '../models/create-contact.model';
-
-import { map, filter, withLatestFrom, take, takeUntil, tap, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
-import { Subject, BehaviorSubject, throwError, of } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { LoginResponse } from '../models/login-response.model';
-
-//   const services = Convert.toServices(json);
-//   const createContact = Convert.toCreateContact(json);
 
 @Injectable({
   providedIn: 'root'
 })
 export class ZingleService implements OnDestroy {
   public URL = 'https://api.zingle.me/v1';
-  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(!!this.storage.get('TOKEN'));
+  public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(
+    !!this.storage.get('TOKEN')
+  );
   private destroy$: Subject<boolean>;
 
-  constructor(@Inject(SESSION_STORAGE) private storage: WebStorageService, private http: HttpClient) { }
+  constructor(
+    @Inject(SESSION_STORAGE) private storage: WebStorageService,
+    private http: HttpClient
+  ) {}
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -41,7 +42,7 @@ export class ZingleService implements OnDestroy {
 
   createContact(serviceId: string, payload: ContactForm) {
     const url = `${this.URL}/services/${serviceId}/contacts`;
-    
+
     this.http
       .post<CreateContact>(
         url,
@@ -82,24 +83,22 @@ export class ZingleService implements OnDestroy {
   getServicesIdByName(name: string): Observable<string> {
     const httpHeader = this.getHttpHeaders(this.storage.get('TOKEN'));
 
-    return this.http
-      .get<Services>(`${this.URL}/services`, httpHeader)
-      .pipe(
-        map((services: Services) => services.result),
-        map((services: Result[]) =>
-          services.find(service => service.business_name === name)
-        ),
-        map((services: Result) => services.id)
-      );
+    return this.http.get<Services>(`${this.URL}/services`, httpHeader).pipe(
+      map((services: Services) => services.result),
+      map((services: Result[]) =>
+        services.find(service => service.business_name === name)
+      ),
+      map((services: Result) => services.id)
+    );
   }
 
   getHttpHeaders(token: string): { headers: HttpHeaders } {
     return {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${token}`
-        })
-      };
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${token}`
+      })
+    };
   }
 
   contactFormToJson(payload: ContactForm) {
