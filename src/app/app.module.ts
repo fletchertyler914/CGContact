@@ -6,19 +6,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { StorageServiceModule} from 'angular-webstorage-service';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { LoginModalComponent } from './login-modal/login-modal.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 
+import { AuthService } from './services/auth.service';
 import { ZingleService } from './services/zingle.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    ContactFormComponent
+    ContactFormComponent,
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,
@@ -27,9 +30,11 @@ import { ZingleService } from './services/zingle.service';
     HttpClientModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StorageServiceModule
   ],
-  providers: [ZingleService],
+  entryComponents: [LoginModalComponent],
+  providers: [ZingleService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

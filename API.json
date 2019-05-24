@@ -1,0 +1,23 @@
+{
+	"channels": [
+    {
+        "channel_type_id": "0a293ea3-4721-433e-a031-610ebcf43255",
+        "value": "+16156913738"
+    }
+  
+	],
+    "custom_field_values": [
+    	{
+            "value": 1558501200,
+            "custom_field_id": "de4dc434-2e32-4121-a06d-8fbedf10f6cb"
+        },
+        {
+            "value": "Tyler",
+            "custom_field_id": "e01a3856-89b1-4db4-bf56-38d79454c921"
+        },
+        {
+            "value": "Fletcher",
+            "custom_field_id": "0df80524-3b27-4fb0-8eeb-c81bd448d294"
+        }
+    ]
+}

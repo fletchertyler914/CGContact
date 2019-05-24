@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ContactForm } from '../models/contact-form.model';
 import { MatSnackBar } from '@angular/material';
 import { DayPreference } from '../models/day-preference.model';
@@ -15,6 +15,8 @@ export class ContactFormComponent implements OnInit {
   private durationInSeconds = 3;
   public showShortDays = true;
   public periodOptions: string[];
+  private serviceId = null;
+
 
   constructor(
     private zingleService: ZingleService,
@@ -23,6 +25,9 @@ export class ContactFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Init Zingle Services
+    this.zingleService.getServicesIdByName('The Motivated U').subscribe(serviceId => this.serviceId = serviceId);
+
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     // this.breakpointObserver
     //   .observe(['(max-width: 650px)'])
@@ -39,7 +44,7 @@ export class ContactFormComponent implements OnInit {
 
   onSubmit() {
     // Submit Contact Form To Zingle Service To Create A New Contact
-    this.zingleService.createContact(this.model);
+    this.zingleService.createContact(this.serviceId, this.model);
 
     // Reset The Form To Clear Input Fields
     this.model = this.getNewModel();
