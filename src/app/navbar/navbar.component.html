@@ -1,6 +1,7 @@
 <mat-toolbar class="navbar-wrapper mat-elevation-z2">
   <img src="assets/cg_black.png" height="40px"/>
 
+  <pre>{{(authService.currentFireUser$ | async)?.email}}</pre>
   <div style="margin-left: auto; display: flex">
       <button style="display: inline-flex" mat-icon-button [matMenuTriggerFor]="appMenu">
           <mat-icon>more_vert</mat-icon>
@@ -12,7 +13,7 @@
   <span *ngIf="(authService.loggedIn$ | async)" style="display: inline-flex; justify-content: center; width: 100%; border-bottom: 1px solid lightgray;">
       <p style="font-size: 14px;">Welcome, {{authService.user?.first_name}}</p>
   </span>
-  <button *ngIf="!(authService.loggedIn$ | async)" (click)="authService.login()" mat-menu-item>Log In</button>
-  <button *ngIf="(authService.loggedIn$ | async)" (click)="authService.logout()"  mat-menu-item>Log Out</button>
+  <button *ngIf="!(authService.loggedIn$ | async)" (click)="authService.login()" mat-menu-item>Log In To Zingle</button>
+  <button *ngIf="!(authService.loggedIn$ | async)" (click)="authService.signUp()" mat-menu-item>Connect To Zingle</button>
+  <button *ngIf="(authService.loggedIn$ | async)" (click)="authService.logout()"  mat-menu-item>Log Out Of Zingle</button>
 </mat-menu>
-  

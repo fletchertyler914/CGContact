@@ -5,6 +5,8 @@ import { DayPreference } from '../models/day-preference.model';
 import { ZingleService } from '../services/zingle.service';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
+import { FirestoreService } from '../services/firestore.service';
+import { LoginResponse } from '../models/login-response.model';
 
 @Component({
   selector: 'app-contact-form',
@@ -23,10 +25,13 @@ export class ContactFormComponent implements OnInit {
     private zingleService: ZingleService,
     private snackBar: MatSnackBar,
     public breakpointObserver: BreakpointObserver,
-    private authService: AuthService
+    private authService: AuthService,
+    private firestore: FirestoreService
   ) {}
 
   ngOnInit(): void {
+    this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
+    
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     // this.breakpointObserver
     //   .observe(['(max-width: 650px)'])

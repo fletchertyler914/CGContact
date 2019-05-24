@@ -1,5 +1,7 @@
-<h1 mat-dialog-title>Login To Zingle</h1>
-<p style="color: red; margin-top: -10px;" *ngIf="!!loginError">Username or Password Is Incorrect!</p>
+<h3 *ngIf="loginData.loginType === 'login'">Login To Zingle</h3>
+<h3 *ngIf="loginData.loginType === 'signup'" mat-dialog-title>Connect Zingle Account</h3>
+
+<p style="color: red; margin-top: -10px;" *ngIf="!!loginError">An Error has Occured. Please Check That Your Username or Password Is Correct!</p>
 <div mat-dialog-content>
     <div class="form-group">
         <label for="phone">Username: <span class="required">*</span></label>
@@ -7,7 +9,7 @@
           type="text"
           class="form-control"
           id="username"
-          [(ngModel)]="loginData.userName"
+          [(ngModel)]="loginData.loginModal.userName"
           name="username"
           #username="ngModel"
           required
@@ -19,14 +21,19 @@
         type="password"
         class="form-control"
         id="password"
-        [(ngModel)]="loginData.password"
+        [(ngModel)]="loginData.loginModal.password"
         name="password"
         #password="ngModel"
         required
       />
     </div>
+
+    <pre>
+      {{ loginData }}
+    </pre>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button cdkFocusInitial (click)="login(loginData)">Login</button>
+  <button *ngIf="loginData.loginType === 'login'" mat-button cdkFocusInitial (click)="login(loginData.loginModal)">Login</button>
+  <button *ngIf="loginData.loginType === 'signup'" mat-button cdkFocusInitial (click)="signUp(loginData.loginModal)">Sign Up</button>
 </div>
