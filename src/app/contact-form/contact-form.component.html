@@ -1,6 +1,6 @@
 <mat-card class="contact-form-card">
   <h1 class="contact-form-header">CG Future Camper</h1>
-  <form (submit)="onSubmit(); contactForm.reset()" #contactForm="ngForm">
+  <form (ngSubmit)="onSubmit(); contactForm.reset()" #contactForm="ngForm">
     <div class="form-group">
       <label for="first-name"
         >First Name: <span class="required">*</span></label

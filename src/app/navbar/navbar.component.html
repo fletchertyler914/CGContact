@@ -1,7 +1,6 @@
 <mat-toolbar class="navbar-wrapper mat-elevation-z2">
   <img src="assets/cg_black.png" height="40px"/>
 
-  <pre>{{(authService.currentFireUser$ | async)?.email}}</pre>
   <div style="margin-left: auto; display: flex">
       <button style="display: inline-flex" mat-icon-button [matMenuTriggerFor]="appMenu">
           <mat-icon>more_vert</mat-icon>

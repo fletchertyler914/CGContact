@@ -31,7 +31,7 @@ export class ContactFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
-    
+
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     // this.breakpointObserver
     //   .observe(['(max-width: 650px)'])
@@ -51,7 +51,9 @@ export class ContactFormComponent implements OnInit {
 
   onSubmit() {
     // Submit Contact Form To Zingle Service To Create A New Contact
-    this.zingleService.createContact(this.serviceId, this.model);
+    // this.zingleService.createContact(this.serviceId, this.model);
+    this.firestore.uploadContact(this.model);
+
 
     // Reset The Form To Clear Input Fields
     this.model = this.getNewModel();

@@ -8,6 +8,7 @@ import { LoginResponse } from '../models/login-response.model';
 import { Observable } from 'rxjs';
 import { LoginModal } from '../login-modal/login-modal.component';
 import * as firebase from 'firebase';
+import { ContactForm } from '../models/contact-form.model';
 
 
 @Injectable({
@@ -23,7 +24,8 @@ export class FirestoreService {
   }
 
   createUser(user: LoginResponse) {
-    return this.db.collection('users').add(user);
+    const data = JSON.parse(JSON.stringify(user));
+    return this.db.collection('users').add(data);
   }
 
   login(user: LoginModal) {
@@ -32,6 +34,11 @@ export class FirestoreService {
 
   signUp(user: LoginModal) {
     return this.afAuth.auth.createUserWithEmailAndPassword(user.userName, user.password);
+  }
+
+  uploadContact(contact: ContactForm) {
+    const data = JSON.parse(JSON.stringify(contact));
+    return this.db.collection('contacts').add(data);
   }
 
   logout() {
