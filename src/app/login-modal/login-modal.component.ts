@@ -5,7 +5,7 @@ import { ZingleService } from '../services/zingle.service';
 import { LoginResponse, Auth } from '../models/login-response.model';
 import { Subject, Observable, throwError, of } from 'rxjs';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
-import { FirestoreService } from '../services/firestore.service';
+import { FirebaseService } from '../services/firebase.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 
@@ -45,7 +45,7 @@ export class LoginModalComponent {
     @Inject(SESSION_STORAGE) private storage: WebStorageService,
     private dialogRef: MatDialogRef<LoginModalComponent>,
     private zingleService: ZingleService,
-    private firestore: FirestoreService,
+    private firestore: FirebaseService,
     private afAuth: AngularFireAuth
   ) {}
 

@@ -15,7 +15,7 @@ import { ContactFormComponent } from './contact-form/contact-form.component';
 
 import { AuthService } from './services/auth.service';
 import { ZingleService } from './services/zingle.service';
-import { FirestoreService } from './services/firestore.service';
+import { FirebaseService } from './services/firebase.service';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -47,7 +47,7 @@ import { firebaseConfig } from '../environments/environment';
     AngularFireStorageModule // imports firebase/storage only needed for storage features
   ],
   entryComponents: [LoginModalComponent],
-  providers: [ZingleService, AuthService, FirestoreService],
+  providers: [ZingleService, AuthService, FirebaseService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

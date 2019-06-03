@@ -5,7 +5,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { Auth } from '../models/login-response.model';
 import { filter, tap, take } from 'rxjs/operators';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
-import { FirestoreService } from './firestore.service';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class AuthService {
   constructor(
     @Inject(SESSION_STORAGE) private storage: WebStorageService,
     private zingleService: ZingleService,
-    private firestore: FirestoreService,
+    private firestore: FirebaseService,
     private dialog: MatDialog
   ) { }
 

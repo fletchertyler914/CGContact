@@ -5,7 +5,7 @@ import { DayPreference } from '../models/day-preference.model';
 import { ZingleService } from '../services/zingle.service';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
-import { FirestoreService } from '../services/firestore.service';
+import { FirebaseService } from '../services/firebase.service';
 import { LoginResponse } from '../models/login-response.model';
 
 @Component({
@@ -26,27 +26,18 @@ export class ContactFormComponent implements OnInit {
     private snackBar: MatSnackBar,
     public breakpointObserver: BreakpointObserver,
     private authService: AuthService,
-    private firestore: FirestoreService
+    private firestore: FirebaseService
   ) {}
 
   ngOnInit(): void {
-    this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
-
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
-    // this.breakpointObserver
-    //   .observe(['(max-width: 650px)'])
-    //   .subscribe((state: BreakpointState) => {
-    //     if (state.matches) {
-    //       this.showShortDays = true;
-    //     } else {
-    //       this.showShortDays = false;
-    //     }
-    //   });
-
     this.model = this.getNewModel();
 
      // Init Zingle Services
     // this.zingleService.getServicesIdByName('The Motivated U').subscribe(serviceId => this.serviceId = serviceId);
+
+    // Firebase
+    this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
   }
 
   onSubmit() {
