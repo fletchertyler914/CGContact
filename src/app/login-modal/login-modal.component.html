@@ -1,7 +1,7 @@
 <h3 *ngIf="loginData.loginType === 'login'">Login To Zingle</h3>
 <h3 *ngIf="loginData.loginType === 'signup'" mat-dialog-title>Connect Zingle Account</h3>
 
-<p style="color: red; margin-top: -10px;" *ngIf="!!loginError">An Error has Occured. Please Check That Your Username or Password Is Correct!</p>
+<p style="color: red; margin-top: -10px;" *ngIf="!!loginError">{{loginError}}</p>
 <div mat-dialog-content>
     <div class="form-group">
         <label for="phone">Username: <span class="required">*</span></label>
