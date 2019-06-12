@@ -6,14 +6,6 @@
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
-export interface User {
-  uid: string;
-  email?: string | null;
-  photoURL?: string;
-  displayName?: string;
-  contacts?: object[];
-  token?: string;
-}
 
 export interface LoginResponse {
   status?: Status;

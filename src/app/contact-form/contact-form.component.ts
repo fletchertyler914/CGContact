@@ -20,7 +20,6 @@ export class ContactFormComponent implements OnInit {
   public periodOptions: string[];
   private serviceId = null;
 
-
   constructor(
     private zingleService: ZingleService,
     private snackBar: MatSnackBar,
@@ -33,11 +32,8 @@ export class ContactFormComponent implements OnInit {
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     this.model = this.getNewModel();
 
-     // Init Zingle Services
-    // this.zingleService.getServicesIdByName('The Motivated U').subscribe(serviceId => this.serviceId = serviceId);
-
     // Firebase
-    this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
+    // this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
   }
 
   onSubmit() {
@@ -50,7 +46,7 @@ export class ContactFormComponent implements OnInit {
     this.model = this.getNewModel();
 
     // Open Thank You Snack Bar
-    this.snackBar.open('Thank You!', null, {
+    this.snackBar.open('Contact Saved!', null, {
       duration: this.durationInSeconds * 1000
     });
   }

@@ -1,13 +1,16 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { filter, tap, take, map, catchError } from 'rxjs/operators';
+import { filter, tap, take, map, catchError, takeUntil, first } from 'rxjs/operators';
 import { ZingleService } from '../services/zingle.service';
 import { LoginResponse, Auth } from '../models/login-response.model';
 import { Subject, Observable, throwError, of } from 'rxjs';
 import { SESSION_STORAGE, WebStorageService } from 'angular-webstorage-service';
 import { FirebaseService } from '../services/firebase.service';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { MatSnackBar } from '@angular/material';
 import { auth } from 'firebase/app';
+import { AuthService } from '../services/auth.service';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 
 export class ModalData {
   loginModal: LoginModal;
@@ -45,8 +48,10 @@ export class LoginModalComponent {
     @Inject(SESSION_STORAGE) private storage: WebStorageService,
     private dialogRef: MatDialogRef<LoginModalComponent>,
     private zingleService: ZingleService,
-    private firestore: FirebaseService,
-    private afAuth: AngularFireAuth
+    private firebaseService: FirebaseService,
+    private afAuth: AngularFireAuth,
+    private snackBar: MatSnackBar,
+    private db: AngularFirestore
   ) {}
 
   onNoClick(): void {
@@ -54,7 +59,16 @@ export class LoginModalComponent {
   }
 
   login(user: LoginModal) {
-    this.firestore.login(user).then(result => console.log(result));
+    this.firebaseService.login(user)
+    .then(result => {
+      
+      console.log(result);
+    })
+    .catch((err: Error) => {
+      this.snackBar.open(err.message, 'dismiss', {
+        duration: 8000
+      });
+    });
     // this.zingleService
     //   .login(btoa(`${data.userName}:${data.password}`))
     //   .pipe(
@@ -76,7 +90,48 @@ export class LoginModalComponent {
   }
 
   signUp(user: LoginModal) {
+    this.zingleService
+    .signup(btoa(`${user.userName}:${user.password}`))
+    .pipe(
+      filter((response: LoginResponse) => !!response),
+      take(1)
+    )
+    .subscribe(
+      (response: LoginResponse) => {
+        console.log('Zingle Login Response: ', response);
+        this.firebaseService.signUp(user)
+        .then(result => {
+          this.afAuth.user.pipe(
+            filter((fbUser: firebase.User) => !!fbUser),
+            tap((fbUser: firebase.User) => this.firebaseService.updateUserData({
+              uid: fbUser.uid,
+              email: fbUser.email,
+              displayName: fbUser.displayName,
+              token: btoa(`${user.userName}:${user.password}`)
+            })),
+            first()
+          ).subscribe();
 
-    this.firestore.signUp(user).then(result => console.log(result));
+          this.snackBar.open('Successfully Connected To Zingle!', 'dismiss', {
+            duration: 3000
+          });
+          this.dialogRef.close(response.auth);
+          this.zingleService.loggedIn$.next(true);
+        })
+        .catch((err: Error) => {
+          this.snackBar.open(err.message, 'dismiss', {
+            duration: 8000
+          });
+          console.log('Err:', err);
+        });
+      },
+      ((errorResponse: LoginResponse) => {
+        this.snackBar.open('Login Failed!', 'dismiss', {
+          duration: 3000
+        });
+        this.zingleService.loggedIn$.next(false);
+        this.loginError = errorResponse;
+      })
+    );
   }
 }

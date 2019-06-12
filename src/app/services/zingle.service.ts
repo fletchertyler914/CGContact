@@ -14,7 +14,8 @@ import { LoginResponse } from '../models/login-response.model';
   providedIn: 'root'
 })
 export class ZingleService implements OnDestroy {
-  public URL = 'https://api.zingle.me/v1';
+  // public URL = 'https://api.zingle.me/v1';
+  public URL = 'http://localhost:5000/cg-contact-app/us-central1/api';
   public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(
     !!this.storage.get('TOKEN')
   );
@@ -31,7 +32,11 @@ export class ZingleService implements OnDestroy {
   }
 
   login(token: string) {
-    return this.http.get<LoginResponse>(this.URL, this.getHttpHeaders(token));
+    return this.http.get<LoginResponse>(`${this.URL}/login`, this.getHttpHeaders(token));
+  }
+
+  signup(token: string) {
+    return this.http.get<LoginResponse>(`${this.URL}/signup`, this.getHttpHeaders(token));
   }
 
   logout() {

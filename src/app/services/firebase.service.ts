@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 
-import { LoginResponse } from '../models/login-response.model';
+import { LoginResponse, User } from '../models/login-response.model';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { LoginModal } from '../login-modal/login-modal.component';
 import * as firebase from 'firebase';
 import { ContactForm } from '../models/contact-form.model';
 import { AuthService } from './auth.service';
+import { filter, map, tap, first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,7 @@ export class FirebaseService {
   fireAuth = firebase.auth();
   public currentUser$: Observable<firebase.User> = this.afAuth.user;
 
-  constructor(private db: AngularFirestore, private afAuth: AngularFireAuth) {
-    this.users = db.collection('users').valueChanges();
-  }
+  constructor(private db: AngularFirestore, private afAuth: AngularFireAuth) { }
 
   createZingleUser(user: LoginResponse) {
     const data = JSON.parse(JSON.stringify(user));
@@ -52,10 +51,35 @@ export class FirebaseService {
 
   uploadContact(contact: ContactForm) {
     const data = JSON.parse(JSON.stringify(contact));
+
+    this.currentUser$.pipe(
+      filter((fbUser: firebase.User) => !!fbUser),
+      tap((fbUser: firebase.User) => this.db.collection('users').doc(fbUser.uid).update({contacts: data})),
+      first()
+    ).subscribe();
+
     return this.db.collection('contacts').add(data);
   }
 
   logout() {
     return this.afAuth.auth.signOut();
   }
+
+    // Sets user data to firestore after succesful login
+    updateUserData(user: User) {
+      const userRef: AngularFirestoreDocument<User> = this.db.doc(
+        `users/${user.uid}`
+      );
+
+      const data: User = {
+        uid: user.uid,
+        email: user.email || null,
+        displayName: user.displayName || user.email,
+        photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
+        contacts: [],
+        token: user.token
+      };
+
+      return userRef.update(data);
+    }
 }
