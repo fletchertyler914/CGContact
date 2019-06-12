@@ -11,7 +11,6 @@ export interface User {
   email?: string | null;
   photoURL?: string;
   displayName?: string;
-  contacts?: object[];
   token?: string;
 }
 

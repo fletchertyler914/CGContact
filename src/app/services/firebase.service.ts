@@ -50,15 +50,12 @@ export class FirebaseService {
   }
 
   uploadContact(contact: ContactForm) {
-    const data = JSON.parse(JSON.stringify(contact));
-
-    this.currentUser$.pipe(
-      filter((fbUser: firebase.User) => !!fbUser),
-      tap((fbUser: firebase.User) => this.db.collection('users').doc(fbUser.uid).update({contacts: data})),
-      first()
-    ).subscribe();
-
-    return this.db.collection('contacts').add(data);
+    if (!!this.fireAuth.currentUser) {
+      const data = JSON.parse(JSON.stringify(contact));
+      return this.db.collection('users').doc(this.fireAuth.currentUser.uid).collection('contacts').add(data);
+    } else {
+      return Promise.reject(new Error('You Are Not Logged In!'))
+    }
   }
 
   logout() {
@@ -76,10 +73,9 @@ export class FirebaseService {
         email: user.email || null,
         displayName: user.displayName || user.email,
         photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
-        contacts: [],
         token: user.token
       };
 
-      return userRef.update(data);
+      return userRef.set(data, {merge: true});
     }
 }

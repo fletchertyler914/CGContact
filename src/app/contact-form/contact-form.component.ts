@@ -2,11 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { ContactForm } from '../models/contact-form.model';
 import { MatSnackBar } from '@angular/material';
 import { DayPreference } from '../models/day-preference.model';
-import { ZingleService } from '../services/zingle.service';
-import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
-import { LoginResponse } from '../models/login-response.model';
 
 @Component({
   selector: 'app-contact-form',
@@ -21,7 +19,6 @@ export class ContactFormComponent implements OnInit {
   private serviceId = null;
 
   constructor(
-    private zingleService: ZingleService,
     private snackBar: MatSnackBar,
     public breakpointObserver: BreakpointObserver,
     private authService: AuthService,
@@ -31,23 +28,25 @@ export class ContactFormComponent implements OnInit {
   ngOnInit(): void {
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     this.model = this.getNewModel();
-
-    // Firebase
-    // this.firestore.users.subscribe((users: LoginResponse[]) => console.log(users));
   }
 
   onSubmit() {
-    // Submit Contact Form To Zingle Service To Create A New Contact
-    // this.zingleService.createContact(this.serviceId, this.model);
-    this.firestore.uploadContact(this.model);
+    // Submit Contact Form To Firebase To Create A New Contact
+    this.firestore.uploadContact(this.model)
+    .then(response => {
+      // Reset The Form To Clear Input Fields
+      this.model = this.getNewModel();
 
-
-    // Reset The Form To Clear Input Fields
-    this.model = this.getNewModel();
-
-    // Open Thank You Snack Bar
-    this.snackBar.open('Contact Saved!', null, {
-      duration: this.durationInSeconds * 1000
+      // Open Thank You Snack Bar
+      this.snackBar.open('Contact Saved!', 'dismiss', {
+        duration: this.durationInSeconds * 1000
+      });
+    })
+    .catch((err: Error) => {
+      // Open Thank You Snack Bar
+      this.snackBar.open(err.message, 'dismiss', {
+        duration: 8000
+      });
     });
   }
 
