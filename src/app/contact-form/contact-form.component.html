@@ -55,6 +55,19 @@
     </div>
 
     <div class="form-group">
+      <label for="referral">Referral:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="referral"
+        [(ngModel)]="model.referral"
+        name="referral"
+        #referral="ngModel"
+        [disabled]="true"
+      />
+    </div>
+
+    <div class="form-group">
       <label for="email">Schedule Preference:</label><br />
       <div class="schedule-wrapper">
         <ng-container *ngFor="let option of model.schedule; let i = index">
@@ -83,6 +96,7 @@
           <button
             type="button"
             mat-icon-button
+            mat-fab
             [matMenuTriggerFor]="appMenu"
             class="schedule-button"
             [ngClass]="{ selected: model.schedule[i].selected, short: showShortDays, long: !showShortDays }"

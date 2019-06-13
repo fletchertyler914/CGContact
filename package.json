@@ -8,6 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "build:all": "ng build --prod && cd functions && npm run build && cd ..",
+    "build:serve": "npm run build:all && firebase serve",
     "build:gh-pages": "ng build --prod --base-href 'https://fletchertyler914.github.io/CGContact/'",
     "deploy:gh-pages": "angular-cli-ghpages --dir dist/CGContact/"
   },

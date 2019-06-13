@@ -36,6 +36,8 @@
 .schedule-button {
     display: flex;
     justify-content: center;
+    background-color:  $cg-white !important;
+    color: #000000 !important;
 }
 
 .required {
@@ -43,13 +45,12 @@
 }
 
 .selected {
-    background-color: $cg-red;
-    color: $cg-white;
+    background-color: $cg-red !important;
+    color: $cg-white !important;
 }
 
 .selected:hover {
     background-color: $cg-red-hover !important;
-    color: $cg-white;
 }
 
 @media screen and (max-width: 950px) {
@@ -60,6 +61,8 @@
 
 @media screen and (max-width: 350px) {
     .contact-form-card { 
-        width: 90%;
+        width: 99%;
+        margin: 10px auto;
     }
+    
 }

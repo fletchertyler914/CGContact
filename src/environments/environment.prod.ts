@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiURL: ''
+  apiURL: 'https://us-central1-cg-contact.cloudfunctions.net/api'
 };
 
 export const firebaseConfig = {

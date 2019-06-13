@@ -5,7 +5,6 @@ import * as express from "express";
 import * as cors from "cors";
 
 import { ZingleService } from "./zingle/zingle.service";
-import { LoginResponse } from "./models/login-response.model";
 
 const app = express();
 

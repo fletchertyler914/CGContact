@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
-import { BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginResponse } from '../models/login-response.model';
 import { environment } from '../../environments/environment';
-import { fbind } from 'q';
 
 @Injectable({
   providedIn: 'root'

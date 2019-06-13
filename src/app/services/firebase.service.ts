@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { LoginModal } from '../login-modal/login-modal.component';
 import { ContactForm } from '../models/contact-form.model';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { User as FBUser } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,14 @@ export class FirebaseService {
       });
   }
 
+  getUserData(fBUser: FBUser) {
+    const userRef: AngularFirestoreDocument<User> = this.db.doc(
+      `users/${fBUser.uid}`
+    );
+
+    return userRef.valueChanges();
+  }
+
   uploadContact(contact: ContactForm) {
     const data = JSON.parse(JSON.stringify(contact));
 
@@ -64,6 +73,7 @@ export class FirebaseService {
     );
 
     const data: User = {
+      referral: user.referral,
       uid: user.uid,
       email: user.email || null,
       displayName: user.displayName || user.email,

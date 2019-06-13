@@ -75,6 +75,7 @@ export class LoginModalComponent {
         this.firebaseService.signUp(user)
         .then((result: auth.UserCredential) => {
           this.firebaseService.updateUserData({
+            referral: '',
             uid: result.user.uid,
             email: result.user.email,
             displayName: result.user.displayName,

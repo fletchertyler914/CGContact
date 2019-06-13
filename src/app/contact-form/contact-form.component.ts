@@ -1,22 +1,29 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy  } from '@angular/core';
 import { ContactForm } from '../models/contact-form.model';
 import { MatSnackBar } from '@angular/material';
 import { DayPreference } from '../models/day-preference.model';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
+import { filter, tap, distinctUntilChanged, switchMap, take, takeUntil } from 'rxjs/operators';
+import { User } from 'firebase';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.scss']
 })
-export class ContactFormComponent implements OnInit {
+export class ContactFormComponent implements OnInit, OnDestroy {
   public model: ContactForm;
   private durationInSeconds = 3;
   public showShortDays = true;
   public periodOptions: string[];
-  private serviceId = null;
+  // private userData$ = this.authService.currentUser$.pipe(
+  //   filter((user: User) => !!user),
+  //   switchMap((user: User) => this.firestore.getUserData(user)),
+  // );
+  destroy$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private snackBar: MatSnackBar,
@@ -28,6 +35,18 @@ export class ContactFormComponent implements OnInit {
   ngOnInit(): void {
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     this.model = this.getNewModel();
+
+    // this.userData$
+    // .pipe(
+    //   tap(userData => this.model.referral = userData.referral),
+    //   takeUntil(this.destroy$)
+    // )
+    // .subscribe();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onSubmit() {
@@ -67,6 +86,7 @@ export class ContactFormComponent implements OnInit {
 
   getNewModel(): ContactForm {
     return new ContactForm(
+      'mike-fletcher',
       '',
       '',
       null,
