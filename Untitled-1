@@ -1,0 +1,5 @@
+myFirestoreFunction({foo: ‘new’}, {params: {group: 'a', id: 123}})
+
+'users/{userId}/contacts/{contactId}'
+
+contactCreatedForUser({'abc':'123'}, {params: {userId: '123', contactId: '456'}})

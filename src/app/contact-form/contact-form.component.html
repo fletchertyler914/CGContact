@@ -63,7 +63,7 @@
         [(ngModel)]="model.referral"
         name="referral"
         #referral="ngModel"
-        [disabled]="true"
+        [disabled]="(loggedIn$ | async)"
       />
     </div>
 

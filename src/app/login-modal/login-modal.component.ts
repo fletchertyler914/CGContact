@@ -51,6 +51,7 @@ export class LoginModalComponent {
   login(user: LoginModal) {
     this.firebaseService.login(user)
     .then((fbUser: auth.UserCredential) => {
+      this.authService.getServices();
       this.dialogRef.close(fbUser);
       this.snackBar.open(`Welcome Back, ${ fbUser.user.email }!`, 'dismiss', {
         duration: 3000
@@ -81,6 +82,8 @@ export class LoginModalComponent {
             displayName: result.user.displayName,
             token: btoa(`${user.userName}:${user.password}`)
           });
+
+          this.authService.getServices();
 
           this.snackBar.open('Successfully Connected To Zingle!', 'dismiss', {
             duration: 3000

@@ -7,12 +7,12 @@
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
-export interface Services {
+export interface ServicesResponse {
   status: Status;
-  result: Result[];
+  result: Services[];
 }
 
-export interface Result {
+export interface Services {
   id: string;
   display_name: string;
   business_name: string;
@@ -207,11 +207,11 @@ export interface Status {
 // Converts JSON strings to/from your types
 // and asserts the results of JSON.parse at runtime
 export class Convert {
-  public static toServices(json: string): Services {
+  public static toServices(json: string): ServicesResponse {
     return cast(JSON.parse(json), r("Services"));
   }
 
-  public static servicesToJson(value: Services): string {
+  public static servicesToJson(value: ServicesResponse): string {
     return JSON.stringify(uncast(value, r("Services")), null, 2);
   }
 }

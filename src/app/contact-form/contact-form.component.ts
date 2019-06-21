@@ -1,29 +1,28 @@
-import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { Component, OnInit  } from '@angular/core';
 import { ContactForm } from '../models/contact-form.model';
 import { MatSnackBar } from '@angular/material';
 import { DayPreference } from '../models/day-preference.model';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
-import { filter, tap, distinctUntilChanged, switchMap, take, takeUntil } from 'rxjs/operators';
-import { User } from 'firebase';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { filter, tap, distinctUntilChanged, switchMap, take, takeUntil, first, map, skip } from 'rxjs/operators';
+import { User as FBUser } from 'firebase';
+import { BehaviorSubject } from 'rxjs';
+import { User } from '../models/login-response.model';
+import { Services } from '../models/services.model';
 
 @Component({
   selector: 'app-contact-form',
   templateUrl: './contact-form.component.html',
   styleUrls: ['./contact-form.component.scss']
 })
-export class ContactFormComponent implements OnInit, OnDestroy {
+export class ContactFormComponent implements OnInit {
   public model: ContactForm;
   private durationInSeconds = 3;
   public showShortDays = true;
   public periodOptions: string[];
-  // private userData$ = this.authService.currentUser$.pipe(
-  //   filter((user: User) => !!user),
-  //   switchMap((user: User) => this.firestore.getUserData(user)),
-  // );
-  destroy$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public referral: string;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -33,40 +32,49 @@ export class ContactFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.authService.getServices();
+
     this.periodOptions = ['Morning', 'Mid Day', 'Evening'];
     this.model = this.getNewModel();
 
-    // this.userData$
-    // .pipe(
-    //   tap(userData => this.model.referral = userData.referral),
-    //   takeUntil(this.destroy$)
-    // )
-    // .subscribe();
-  }
+    this.firestore.currentUser$
+    .pipe(
+      tap((user: FBUser) => !!user ? this.loggedIn$.next(true) : this.loggedIn$.next(false)),
+      filter((user: FBUser) => !!user),
+      switchMap((user: FBUser) => this.firestore.getUserData()),
+      // tap((user: User) => console.log('Logged In, Update Model.', user)),
+      tap((user: User) => this.model.referral = user.referral)
+    ).subscribe();
 
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.complete();
+    this.loggedIn$.pipe(
+      skip(1),
+      filter(loggedIn => !loggedIn),
+      // tap(value => console.log('Not Logged In, Reset Model.', value)),
+      tap(() => this.model = this.getNewModel())
+    ).subscribe();
   }
 
   onSubmit() {
+    const zinglePayload = this.authService.contactFormToJson(this.model);
+    this.authService.createContact(zinglePayload);
+    
     // Submit Contact Form To Firebase To Create A New Contact
-    this.firestore.uploadContact(this.model)
-    .then(response => {
-      // Reset The Form To Clear Input Fields
-      this.model = this.getNewModel();
+    // this.firestore.uploadContact(this.model)
+    // .then(response => {
+    //   // Reset The Form To Clear Input Fields
+    //   this.model = this.getNewModel();
 
-      // Open Thank You Snack Bar
-      this.snackBar.open('Contact Saved!', 'dismiss', {
-        duration: this.durationInSeconds * 1000
-      });
-    })
-    .catch((err: Error) => {
-      // Open Thank You Snack Bar
-      this.snackBar.open(err.message, 'dismiss', {
-        duration: 8000
-      });
-    });
+    //   // Open Thank You Snack Bar
+    //   this.snackBar.open('Contact Saved!', 'dismiss', {
+    //     duration: this.durationInSeconds * 1000
+    //   });
+    // })
+    // .catch((err: Error) => {
+    //   // Open Thank You Snack Bar
+    //   this.snackBar.open(err.message, 'dismiss', {
+    //     duration: 8000
+    //   });
+    // });
   }
 
   selectDay(option: DayPreference, period: string) {
@@ -86,7 +94,7 @@ export class ContactFormComponent implements OnInit, OnDestroy {
 
   getNewModel(): ContactForm {
     return new ContactForm(
-      'mike-fletcher',
+      '',
       '',
       '',
       null,

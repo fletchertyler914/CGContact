@@ -20,6 +20,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
+
 
 import { firebaseConfig } from '../environments/environment';
 
@@ -41,9 +43,9 @@ import { firebaseConfig } from '../environments/environment';
     StorageServiceModule,
     MatDialogModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule, // imports firebase/firestore, only needed for database features
-    AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
-    AngularFireStorageModule // imports firebase/storage only needed for storage features
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+    AngularFireFunctionsModule
   ],
   entryComponents: [LoginModalComponent],
   providers: [AuthService, FirebaseService],

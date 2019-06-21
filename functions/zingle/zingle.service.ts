@@ -23,7 +23,15 @@ export class ZingleService {
   }
 
   createContact(serviceId: string, payload: ContactForm) {
-    // const url = `${this.URL}/services/${serviceId}/contacts`;
+    const url = `${this.URL}/services/${serviceId}/contacts`;
+    
+    const options = {
+      url: `${this.URL}/services/${serviceId}/contacts`,
+      headers: {
+        'Authorization': `Basic ${token}`
+      }
+    };
+    request(options, callback);
     // this.http
     //   .post<CreateContact>(
     //     url,
@@ -49,6 +57,16 @@ export class ZingleService {
     });
 
     return tags;
+  }
+
+  getServices(token: string, callback: any) {
+    const options = {
+      url: `${this.URL}/services`,
+      headers: {
+        'Authorization': `Basic ${token}`
+      }
+    };
+    request(options, callback);
   }
 
   getPeriod(day: DayPreference): any {
