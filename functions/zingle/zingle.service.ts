@@ -3,6 +3,7 @@ import { DayPreference } from "../models/day-preference.model";
 import { Observable } from "rxjs/internal/Observable";
 import { of } from "rxjs";
 import * as request from "request";
+import { ZinglePayload } from "../models/zingle-payload.model";
 
 export class ZingleService {
   public URL = "https://api.zingle.me/v1";
@@ -18,33 +19,21 @@ export class ZingleService {
     request(options, callback);
   }
 
-  logout() {
-    // TODO: Implement Log Out
-  }
-
-  createContact(serviceId: string, payload: ContactForm) {
+  createContact(token:string, serviceId: string, payload: string, callback: any) {
     const url = `${this.URL}/services/${serviceId}/contacts`;
     
     const options = {
-      url: `${this.URL}/services/${serviceId}/contacts`,
+      method: 'POST',
+      url: url,
       headers: {
-        'Authorization': `Basic ${token}`
-      }
+        'Authorization': `Basic ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: payload
     };
-    request(options, callback);
-    // this.http
-    //   .post<CreateContact>(
-    //     url,
-    //     this.contactFormToJson(payload),
-    //     this.getHttpHeaders(this.storage.get('TOKEN'))
-    //   )
-    //   .subscribe((result: CreateContact) => {
-    //     console.log(result);
-    //     if (result.status && result.status.status_code === 200) {
-    //       const contactResult = result.result;
-    //       console.log(contactResult);
-    //     }
-    //   });
+
+    // callback(null, {statusCode: 200}, payload);
+    request.post(options, callback);
   }
 
   getSelectedDayTags(daysSelected: DayPreference[]): string[] {

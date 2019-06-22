@@ -57,24 +57,24 @@ export class ContactFormComponent implements OnInit {
   onSubmit() {
     const zinglePayload = this.authService.contactFormToJson(this.model);
     this.authService.createContact(zinglePayload);
-    
-    // Submit Contact Form To Firebase To Create A New Contact
-    // this.firestore.uploadContact(this.model)
-    // .then(response => {
-    //   // Reset The Form To Clear Input Fields
-    //   this.model = this.getNewModel();
 
-    //   // Open Thank You Snack Bar
-    //   this.snackBar.open('Contact Saved!', 'dismiss', {
-    //     duration: this.durationInSeconds * 1000
-    //   });
-    // })
-    // .catch((err: Error) => {
-    //   // Open Thank You Snack Bar
-    //   this.snackBar.open(err.message, 'dismiss', {
-    //     duration: 8000
-    //   });
-    // });
+    // Submit Contact Form To Firebase To Create A New Contact
+    this.firestore.uploadContact(this.model)
+    .then(response => {
+      // Reset The Form To Clear Input Fields
+      this.model = this.getNewModel();
+
+      // Open Thank You Snack Bar
+      this.snackBar.open('Contact Saved!', 'dismiss', {
+        duration: this.durationInSeconds * 1000
+      });
+    })
+    .catch((err: Error) => {
+      // Open Thank You Snack Bar
+      this.snackBar.open(err.message, 'dismiss', {
+        duration: 8000
+      });
+    });
   }
 
   selectDay(option: DayPreference, period: string) {

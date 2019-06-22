@@ -72,7 +72,7 @@ app.get("/signup", async (req: any, res: any) => {
 });
 
 app.options("/services", async (req: any, res: any) => {
-  res.status(200).send();
+  res.send();
 });
 
 app.get("/services", async (req: any, res: any) => {
@@ -91,21 +91,25 @@ app.get("/services", async (req: any, res: any) => {
 });
 
 app.options("/contacts", async (req: any, res: any) => {
-  res.status(200).send();
+  res.send();
 });
 
 app.post("/contacts", async (req: any, res: any) => {
+  const { serviceId, payload } = req.body;
+
+  // res.status(200).json({ servId: serviceId, pld: payload });
+
   try {
     const zingleService: ZingleService = new ZingleService();
-    zingleService.createContact(req.user, req., (error, response, body) => {
+    zingleService.createContact(req.user, serviceId, payload, (error, response, body) => {
         if (!error) {
             res.status(response.statusCode).send(body);
         } else {
-            res.status(500).json(error);
+            res.status(500).send(error);
         }
     });
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).send(error);
   }
 });
 

@@ -7,6 +7,7 @@ import { ServicesResponse, Services } from '../models/services.model';
 import { filter, switchMap, map, tap, take } from 'rxjs/operators';
 import { User as FBUser } from 'firebase';
 import { ContactForm } from 'functions/models/contact-form.model';
+import { ZinglePayload } from '../models/zingle-payload.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,10 @@ export class AuthService {
             this.getHttpHeaders(token)
           )
         ),
-        tap((servicesResponse: ServicesResponse) => this.services = servicesResponse.result),
+        tap(
+          (servicesResponse: ServicesResponse) =>
+            (this.services = servicesResponse.result)
+        ),
         take(1)
       )
       .subscribe();
@@ -61,39 +65,44 @@ export class AuthService {
 
   createContact(zinglePayload: string) {
     this.usertoken$
-    .pipe(
-      switchMap(token =>
-        this.http.post<ServicesResponse>(
-          `${this.URL}/contacts`,
-          zinglePayload,
-          this.getHttpHeaders(token)
-        )
-      ),
-      take(1)
-    )
-    .subscribe(value => console.log(value));
+      .pipe(
+        switchMap(token =>
+          this.http.post<ServicesResponse>(
+            `${this.URL}/contacts`,
+            {
+              serviceId: this.services[0].id,
+              payload: zinglePayload
+            },
+            this.getHttpHeaders(token)
+          )
+        ),
+        take(1)
+      )
+      .subscribe(value => console.log(value));
   }
 
-  contactFormToJson(payload: ContactForm) {
+  contactFormToJson(payload: ContactForm): string {
     return JSON.stringify({
       channels: [
         {
-          channel_type_id: this.services[0].channel_types.find(channel => channel.code === 'phone_number').id,
+          channel_type_id: this.services[0].channel_types.find(
+            channel => channel.code === 'phone_number'
+          ).id,
           value: `+1${payload.phoneNumber}`
         }
       ],
       custom_field_values: [
         {
-          value: Date.now(),
-          custom_field_id: this.services[0].contact_custom_fields.find(field => field.code === 'sign_up_date').id
+          custom_field_id: this.services[0].contact_custom_fields.find(
+            field => field.code === 'first_name'
+          ).id,
+          value: payload.firstName
         },
         {
-          value: payload.firstName,
-          custom_field_id: this.services[0].contact_custom_fields.find(field => field.code === 'first_name').id
-        },
-        {
+          custom_field_id: this.services[0].contact_custom_fields.find(
+            field => field.code === 'last_name'
+          ).id,
           value: payload.lastName,
-          custom_field_id: this.services[0].contact_custom_fields.find(field => field.code === 'last_name').id
         }
       ]
     });

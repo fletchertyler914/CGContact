@@ -60,21 +60,21 @@ export class FirebaseService {
   uploadContact(contact: ContactForm) {
     const data = JSON.parse(JSON.stringify(contact));
 
-    // // If User Not Logged In, Create Contact In General Contact Collection
-    // if (!!this.afAuth.auth.currentUser) {
+    // If User Not Logged In, Create Contact In General Contact Collection
+    if (!!this.afAuth.auth.currentUser) {
 
-    //   return this.db
-    //     .collection('users')
-    //     .doc(this.afAuth.auth.currentUser.uid)
-    //     .collection('contacts')
-    //     .add(data);
-    // } else {
-    //   // Add Contacts To Generic Contacts Collection
-    //   return this.db.collection('contacts').add(data);
+      return this.db
+        .collection('users')
+        .doc(this.afAuth.auth.currentUser.uid)
+        .collection('contacts')
+        .add(data);
+    } else {
+      // Add Contacts To Generic Contacts Collection
+      return this.db.collection('contacts').add(data);
 
-    //   // Return No Auth Error
-    //   // return Promise.reject(new Error('You Are Not Logged In!'))
-    // }
+      // Return No Auth Error
+      // return Promise.reject(new Error('You Are Not Logged In!'))
+    }
   }
 
   logout() {
